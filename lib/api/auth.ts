@@ -1,24 +1,21 @@
-import axiosInstance from "./axios-instance";
-import { API } from "./endpoints";
+import { registerUser, loginUser } from "./public";
 
 export const register = async (data: Record<string, unknown>) => {
     try {
-        const response = await axiosInstance.post(API.AUTH.REGISTER, data);
-        return response.data;
+        const result = await registerUser(data);
+        return result;
     } catch (error: unknown) {
-        const err = error as { response?: { data?: { message?: string } } };
-        throw new Error(err?.response?.data?.message || "Registration failed");
+        const err = error as { message?: string };
+        throw new Error(err?.message || "Registration failed");
     }
 };
 
 export const login = async (data: Record<string, unknown>) => {
     try {
-        const response = await axiosInstance.post(API.AUTH.LOGIN, data);
-        return response.data;
+        const result = await loginUser(data);
+        return result;
     } catch (error: unknown) {
-        const err = error as { response?: { data?: { message?: string } } };
-        throw new Error(err?.response?.data?.message || "Login failed");
+        const err = error as { message?: string };
+        throw new Error(err?.message || "Login failed");
     }
 };
-
-

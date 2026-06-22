@@ -3,6 +3,7 @@ import { RegisterFormData } from "@/app/(auth)/_components/schema";
 export type RegisterApiPayload = {
     fullName: string;
     email: string;
+    gender: string;
     password: string;
     confirmPassword: string;
 };
@@ -19,6 +20,7 @@ export function toRegisterPayload(data: RegisterFormData): RegisterApiPayload {
     return {
         fullName: normalizeFullName(data.fullName),
         email: normalizeEmail(data.email),
+        gender: data.gender,
         password: data.password,
         confirmPassword: data.confirmPassword,
     };

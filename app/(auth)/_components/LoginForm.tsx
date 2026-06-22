@@ -7,12 +7,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleLoginUser } from "@/lib/actions/auth-action";
 import SocialLoginButtons from "@/app/_components/SocialLoginButtons";
+import { useAuth } from "@/context/AuthProvider";
+import type { DashboardUser } from "@/lib/api/protected";
 
 export default function LoginForm() {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+    const { setUser } = useAuth();
 
     const {
         register,
@@ -28,6 +31,9 @@ export default function LoginForm() {
             try {
                 const result = await handleLoginUser(data);
                 if (result.success) {
+                    if (result.data?.user) {
+                        setUser(result.data.user as DashboardUser);
+                    }
                     router.push("/dashboard");
                 } else {
                     setError(result.message || "Login failed");

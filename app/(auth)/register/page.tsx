@@ -4,7 +4,7 @@ import RegisterForm from "@/app/(auth)/_components/RegisterForm";
 export default function RegisterPage() {
     return (
         <div className="min-h-screen bg-[#F4F7F5] flex items-center justify-center p-6">
-            <div className="flex w-full max-w-5xl overflow-hidden rounded-3xl border border-[#C7EED5] bg-white shadow-xl shadow-green-100/50">
+            <div className="flex w-full max-w-5xl overflow-visible rounded-3xl border border-[#C7EED5] bg-white shadow-xl shadow-green-100/50">
 
                 {/* Left Hero Section */}
                 <div className="relative hidden lg:flex lg:w-[45%] flex-col justify-between p-10 overflow-hidden">

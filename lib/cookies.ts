@@ -1,11 +1,20 @@
 "use server";
 import { cookies } from "next/headers";
 
+const cookieOptions = {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30
+};
+
 export async function setTokenCookie(token: string) {
     const cookieStore = await cookies();
     cookieStore.set({
         name: "auth_token",
         value: token,
+        ...cookieOptions
     });
 }
 
@@ -19,6 +28,7 @@ export async function storeUserData(userData: Record<string, unknown>) {
     cookieStore.set({
         name: "user_data",
         value: JSON.stringify(userData),
+        ...cookieOptions
     });
 }
 

@@ -1,8 +1,8 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { registerSchema, RegisterFormData } from "@/app/(auth)/_components/schema";
+import { GENDER_OPTIONS, registerSchema, RegisterFormData } from "@/app/(auth)/_components/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleRegisterUser } from "@/lib/actions/auth-action";
@@ -14,15 +14,39 @@ export default function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [isGenderOpen, setIsGenderOpen] = useState(false);
+    const genderRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
     const {
         register,
         handleSubmit,
+        setValue,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
+        defaultValues: {
+            fullName: "",
+            email: "",
+            gender: undefined,
+            password: "",
+            confirmPassword: "",
+        },
     });
+
+    const selectedGender = watch("gender");
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (genderRef.current && !genderRef.current.contains(event.target as Node)) {
+                setIsGenderOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     const onSubmit = (data: RegisterFormData) => {
         if (!agreedToTerms) return;
@@ -44,6 +68,9 @@ export default function RegisterForm() {
 
     const inputClass =
         "h-12 w-full rounded-xl border-0 bg-sage-100 pl-11 pr-4 text-gray-900 placeholder:text-sage-400 outline-none transition-colors focus:bg-sage-50 focus:ring-2 focus:ring-sage-500/20";
+
+    const triggerClass =
+        "flex h-12 w-full items-center rounded-xl border-0 bg-sage-100 pl-11 pr-10 text-left outline-none transition-colors focus:bg-sage-50 focus:ring-2 focus:ring-sage-500/20";
 
     const labelClass = "mb-2 block text-xs font-semibold uppercase tracking-wide text-sage-700";
 
@@ -105,6 +132,75 @@ export default function RegisterForm() {
                 </div>
 
                 <div>
+                    <label className={labelClass} id="gender-label">
+                        Gender
+                    </label>
+                    <div className="relative" ref={genderRef}>
+                        <span className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gray-400">
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </span>
+                        <button
+                            type="button"
+                            id="gender"
+                            aria-labelledby="gender-label"
+                            aria-haspopup="listbox"
+                            aria-expanded={isGenderOpen}
+                            onClick={() => setIsGenderOpen((open) => !open)}
+                            className={triggerClass}
+                        >
+                            <span className={selectedGender ? "text-gray-900" : "text-sage-400"}>
+                                {selectedGender
+                                    ? GENDER_OPTIONS.find((option) => option.value === selectedGender)?.label
+                                    : "Select gender"}
+                            </span>
+                        </button>
+                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <svg
+                                className={`h-5 w-5 transition-transform ${isGenderOpen ? "rotate-180" : ""}`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </span>
+                        {isGenderOpen && (
+                            <ul
+                                role="listbox"
+                                aria-labelledby="gender-label"
+                                className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-sage-100 bg-white py-1 shadow-lg"
+                            >
+                                {GENDER_OPTIONS.map((option) => (
+                                    <li key={option.value} role="presentation">
+                                        <button
+                                            type="button"
+                                            role="option"
+                                            aria-selected={selectedGender === option.value}
+                                            onClick={() => {
+                                                setValue("gender", option.value, { shouldValidate: true });
+                                                setIsGenderOpen(false);
+                                            }}
+                                            className={`flex h-11 w-full items-center px-4 text-left text-sm transition-colors hover:bg-sage-50 ${
+                                                selectedGender === option.value
+                                                    ? "bg-sage-50 font-medium text-sage-800"
+                                                    : "text-gray-900"
+                                            }`}
+                                        >
+                                            {option.label}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                    {errors.gender && (
+                        <span className="mt-1 block text-sm text-red-500">{errors.gender.message}</span>
+                    )}
+                </div>
+
+                <div>
                     <label className={labelClass}>Password</label>
                     <div className="relative">
                         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -143,7 +239,7 @@ export default function RegisterForm() {
                     <div className="relative">
                         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                         </span>
                         <input
