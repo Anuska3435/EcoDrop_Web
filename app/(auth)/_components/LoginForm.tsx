@@ -17,13 +17,13 @@ export default function LoginForm() {
     const router = useRouter();
     const { setUser } = useAuth();
 
-    // const {
-    //     register,
-    //     handleSubmit,
-    //     formState: { errors, isSubmitting },
-    // } = useForm<LoginFormData>({
-    //     resolver: zodResolver(loginSchema),
-    // });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<LoginFormData>({
+        resolver: zodResolver(loginSchema),
+    });
 
     const onSubmit = (data: LoginFormData) => {
         setError("");
