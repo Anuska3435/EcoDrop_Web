@@ -55,6 +55,8 @@ export async function registerUser(data: Record<string, unknown>) {
 }
 
 export async function loginUser(data: Record<string, unknown>) {
+    console.log("Logging in user with data:", data); // Debugging line  
+    
     return publicFetch<{ user: Record<string, unknown>; token: string }>(API.AUTH.LOGIN, {
         method: "POST",
         body: JSON.stringify(data),

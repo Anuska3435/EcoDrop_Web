@@ -48,6 +48,56 @@ export interface DashboardSummary {
     recentReports: ReportRecord[];
 }
 
+function toUploadsRoute(urlOrPath: string | null | undefined) {
+    if (!urlOrPath) return "";
+
+    // Backend sometimes returns a Windows filesystem path like:
+    // "C:\\...\\uploads\\file.jpg" or "C:/.../uploads/file.jpg".
+    // Convert it into our Next.js route: `/uploads/file.jpg`
+    {
+        const normalized = urlOrPath.replace(/\\/g, "/");
+        const idx = normalized.toLowerCase().lastIndexOf("/uploads/");
+        if (idx !== -1) {
+            const uploadsPath = normalized.slice(idx); // "/uploads/...."
+            return uploadsPath;
+        }
+    }
+
+    // If API returns a relative uploads path like "/uploads/xxx.jpg", keep it.
+    if (urlOrPath.startsWith("/")) {
+        return urlOrPath;
+    }
+
+    // If API returns a full URL, extract its pathname (we will serve it via our `/uploads/*` route).
+    try {
+        const u = new URL(urlOrPath);
+        return u.pathname + u.search;
+    } catch {
+        // Fallback: treat as a path without leading slash.
+        return urlOrPath.startsWith("/") ? urlOrPath : `/${urlOrPath}`;
+    }
+}
+
+function normalizeReport(record: ReportRecord): ReportRecord {
+    // Prefer imagePath when present; it's usually more reliable than a pre-built imageUrl from the backend.
+    const stableUrl = record.imagePath ? toUploadsRoute(record.imagePath) : toUploadsRoute(record.imageUrl);
+    return {
+        ...record,
+        imageUrl: stableUrl
+    };
+}
+
+function normalizeUser(user: DashboardUser): DashboardUser {
+    const stableProfileUrl = user.profileImagePath
+        ? toUploadsRoute(user.profileImagePath)
+        : toUploadsRoute(user.profileImageUrl ?? "");
+
+    return {
+        ...user,
+        profileImageUrl: stableProfileUrl || user.profileImageUrl,
+    };
+}
+
 async function authenticatedFetch<T>(endpoint: string, init: RequestInit = {}): Promise<T> {
     const token = await getTokenCookie();
 
@@ -78,27 +128,35 @@ async function authenticatedFetch<T>(endpoint: string, init: RequestInit = {}): 
 }
 
 export async function getCurrentUserProfile() {
-    return authenticatedFetch<DashboardUser>(API.AUTH.WHOAMI);
+    const user = await authenticatedFetch<DashboardUser>(API.AUTH.WHOAMI);
+    return normalizeUser(user);
 }
 
 export async function updateUserProfile(formData: FormData) {
-    return authenticatedFetch<DashboardUser>(API.AUTH.UPDATE, {
-        method: "PATCH",
+    const updated = await authenticatedFetch<DashboardUser>(API.AUTH.UPDATE, {
+        method: "PUT",
         body: formData
     });
+    return normalizeUser(updated);
 }
 
 export async function getDashboardSummary() {
-    return authenticatedFetch<DashboardSummary>(API.REPORTS.SUMMARY);
+    const summary = await authenticatedFetch<DashboardSummary>(API.REPORTS.SUMMARY);
+    return {
+        ...summary,
+        recentReports: summary.recentReports.map(normalizeReport)
+    };
 }
 
 export async function getUserReports() {
-    return authenticatedFetch<ReportRecord[]>(API.REPORTS.ROOT);
+    const reports = await authenticatedFetch<ReportRecord[]>(API.REPORTS.ROOT);
+    return reports.map(normalizeReport);
 }
 
 export async function createUserReport(formData: FormData) {
-    return authenticatedFetch<ReportRecord>(API.REPORTS.ROOT, {
+    const created = await authenticatedFetch<ReportRecord>(API.REPORTS.ROOT, {
         method: "POST",
         body: formData
     });
+    return normalizeReport(created);
 }

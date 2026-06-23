@@ -12,6 +12,19 @@ interface ProfileUpdateFormProps {
     user: DashboardUser;
 }
 
+function toLocalUploadsSrc(src: string | null) {
+    if (!src) return null;
+    // Keep blob previews as-is.
+    if (src.startsWith("blob:")) return src;
+
+    const normalized = src.replace(/\\/g, "/");
+    const idx = normalized.toLowerCase().lastIndexOf("/uploads/");
+    if (idx !== -1) {
+        return normalized.slice(idx); // "/uploads/..."
+    }
+    return src;
+}
+
 export default function ProfileUpdateForm({ user }: ProfileUpdateFormProps) {
     const router = useRouter();
     const formRef = useRef<HTMLFormElement>(null);
@@ -20,8 +33,16 @@ export default function ProfileUpdateForm({ user }: ProfileUpdateFormProps) {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [previewUrl, setPreviewUrl] = useState<string | null>(
-        user.profileImageUrl ?? null
+        toLocalUploadsSrc(user.profileImageUrl ?? null)
     );
+
+    useEffect(() => {
+        // When navigating away/back, ensure we don't keep an old remote URL in state.
+        setPreviewUrl((current) => {
+            if (current?.startsWith("blob:")) return current;
+            return toLocalUploadsSrc(user.profileImageUrl ?? null);
+        });
+    }, [user.profileImageUrl]);
 
     useEffect(() => {
         return () => {
@@ -95,6 +116,9 @@ export default function ProfileUpdateForm({ user }: ProfileUpdateFormProps) {
                                 src={previewUrl}
                                 alt="Profile preview"
                                 fill
+                                sizes="96px"
+                                priority={!previewUrl.startsWith("blob:")}
+                                loading={previewUrl.startsWith("blob:") ? "lazy" : "eager"}
                                 className="object-cover"
                                 unoptimized={previewUrl.startsWith("blob:")}
                             />

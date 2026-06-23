@@ -23,7 +23,7 @@ export async function getTokenCookie() {
     return cookieStore.get("auth_token")?.value;
 }
 
-export async function storeUserData(userData: Record<string, unknown>) {
+export async function storeUserData(userData: unknown) {
     const cookieStore = await cookies();
     cookieStore.set({
         name: "user_data",

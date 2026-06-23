@@ -32,7 +32,7 @@ export default function LoginForm() {
                 const result = await handleLoginUser(data);
                 if (result.success) {
                     if (result.data?.user) {
-                        setUser(result.data.user as DashboardUser);
+                        setUser(result.data.user as unknown as DashboardUser);
                     }
                     router.push("/dashboard");
                 } else {

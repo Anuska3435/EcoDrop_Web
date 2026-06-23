@@ -4,6 +4,15 @@ import ReportUploadForm from "@/app/dashboard/_components/ReportUploadForm";
 import { getDashboardSummary, getCurrentUserProfile, getUserReports } from "@/lib/api/protected";
 import { getTokenCookie } from "@/lib/cookies";
 
+function toLocalUploadsSrc(src: string) {
+    const normalized = String(src || "").replace(/\\/g, "/");
+    const idx = normalized.toLowerCase().lastIndexOf("/uploads/");
+    if (idx !== -1) {
+        return normalized.slice(idx); // "/uploads/..."
+    }
+    return src;
+}
+
 async function loadDashboardData() {
     try {
         const [user, summary, reports] = await Promise.all([
@@ -177,7 +186,7 @@ export default async function DashboardPage() {
                                     className="overflow-hidden rounded-3xl border border-sage-100 bg-sage-50"
                                 >
                                     <Image
-                                        src={report.imageUrl}
+                                        src={toLocalUploadsSrc(report.imageUrl)}
                                         alt={report.title}
                                         width={600}
                                         height={400}

@@ -47,7 +47,7 @@ export async function fetchCurrentUserClient() {
 
 export async function updateUserProfileClient(formData: FormData) {
     return protectedClientFetch<DashboardUser>(API.AUTH.UPDATE, {
-        method: "PATCH",
+        method: "PUT",
         body: formData,
     });
 }
