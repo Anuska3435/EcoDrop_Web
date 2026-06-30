@@ -12,6 +12,10 @@ export default async function ProfilePage() {
     try {
         const user = await getCurrentUserProfile();
 
+        if (user.role === "admin") {
+            redirect("/dashboard");
+        }
+
         return (
             <main className="mx-auto max-w-3xl px-6 py-12">
                 <ProfileUpdateForm user={user} />
