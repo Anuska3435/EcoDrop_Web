@@ -48,6 +48,16 @@ export interface DashboardSummary {
     recentReports: ReportRecord[];
 }
 
+export interface PaginatedUsersResponse {
+    data: DashboardUser[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+}
+
 function toUploadsRoute(urlOrPath: string | null | undefined) {
     if (!urlOrPath) return "";
 
@@ -159,4 +169,44 @@ export async function createUserReport(formData: FormData) {
         body: formData
     });
     return normalizeReport(created);
+}
+
+// Admin functions
+export async function adminGetUsers(page: number = 1, limit: number = 10, search?: string): Promise<PaginatedUsersResponse> {
+    const params = new URLSearchParams();
+    params.set("page", String(page));
+    params.set("limit", String(limit));
+    if (search) params.set("search", search);
+    const res = await authenticatedFetch<PaginatedUsersResponse>(`${API.ADMIN.USERS}?${params.toString()}`);
+    return {
+        ...res,
+        data: res.data.map(normalizeUser)
+    };
+}
+
+export async function adminGetUserById(id: string): Promise<DashboardUser> {
+    const user = await authenticatedFetch<DashboardUser>(`${API.ADMIN.USERS}/${id}`);
+    return normalizeUser(user);
+}
+
+export async function adminCreateUser(userData: Partial<DashboardUser> & { password: string }): Promise<DashboardUser> {
+    const user = await authenticatedFetch<DashboardUser>(API.ADMIN.USERS, {
+        method: "POST",
+        body: JSON.stringify(userData)
+    });
+    return normalizeUser(user);
+}
+
+export async function adminUpdateUser(id: string, userData: Partial<DashboardUser> & { password?: string }): Promise<DashboardUser> {
+    const user = await authenticatedFetch<DashboardUser>(`${API.ADMIN.USERS}/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(userData)
+    });
+    return normalizeUser(user);
+}
+
+export async function adminDeleteUser(id: string): Promise<void> {
+    await authenticatedFetch<void>(`${API.ADMIN.USERS}/${id}`, {
+        method: "DELETE"
+    });
 }
