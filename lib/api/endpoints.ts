@@ -9,6 +9,9 @@ export const API = {
         ROOT: "/api/v1/reports",
         SUMMARY: "/api/v1/reports/summary",
     },
+    ADMIN: {
+        USERS: "/api/v1/admin/users",
+    },
 } as const;
 
 export const PUBLIC_API_PATHS = new Set<string>([
@@ -21,10 +24,11 @@ export const PROTECTED_API_PATHS = new Set<string>([
     API.AUTH.UPDATE,
     API.REPORTS.ROOT,
     API.REPORTS.SUMMARY,
+    API.ADMIN.USERS,
 ]);
 
 export function isProtectedApiPath(path: string) {
-    return PROTECTED_API_PATHS.has(path);
+    return PROTECTED_API_PATHS.has(path) || path.startsWith("/api/v1/admin");
 }
 
 export function isPublicApiPath(path: string) {
