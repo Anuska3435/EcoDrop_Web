@@ -11,7 +11,6 @@ import { DashboardUser } from "@/lib/api/protected";
 export default function DashboardNav() {
     const pathname = usePathname();
     const [user, setUser] = useState<DashboardUser | null>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -20,22 +19,23 @@ export default function DashboardNav() {
                 setUser(currentUser);
             } catch {
                 // Ignore errors
-            } finally {
-                setLoading(false);
             }
         };
         loadUser();
     }, []);
 
+    const isAdmin = user?.role === "admin";
+
     const links = [
-        { href: "/dashboard", label: "Overview" },
-        ...(user?.role !== "admin" 
-            ? [
-                { href: "/dashboard/profile", label: "Profile" },
-                { href: "/dashboard/password", label: "Password" }
-              ] 
-            : []),
-        ...(user?.role === "admin" ? [{ href: "/dashboard/admin", label: "Admin" }] : []),
+        { href: "/dashboard", label: "Dashboard" },
+        ...(!isAdmin ? [
+            { href: "/dashboard/centers", label: "Centers" },
+            { href: "/dashboard/learn", label: "Learn" },
+            { href: "/dashboard/impact", label: "Impact" },
+            { href: "/dashboard/profile", label: "Profile" },
+            { href: "/dashboard/password", label: "Password" },
+        ] : []),
+        ...(isAdmin ? [{ href: "/dashboard/admin", label: "Admin" }] : []),
     ];
 
     return (

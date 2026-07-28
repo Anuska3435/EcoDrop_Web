@@ -22,4 +22,36 @@ body {
     "Segoe UI", Roboto, sans-serif;
 }
 
+.quick-tool {
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 1rem;
+  color: #475569;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  font-weight: 600;
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 6rem;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
 
+.quick-tool:hover {
+  background: #ecfdf5;
+  color: #065f46;
+  transform: translateY(-0.125rem);
+}
+
+.quick-tool svg {
+  color: #047857;
+  font-size: 1.125rem;
+}
+
+.tree-crown {
+  box-shadow: -18px 12px 18px rgba(104, 146, 49, 0.33), 12px -5px 13px rgba(255, 255, 255, 0.55) inset;
+}
+
+.map-grid {
+  background-image: linear-gradient(25deg, transparent 47%, #ffffff 48%, #ffffff 52%, transparent 53%), linear-gradient(-35deg, transparent 46%, #ffffff 47%, #ffffff 52%, transparent 53%), linear-gradient(75deg, transparent 48%, #d7ddd7 49%, #d7ddd7 51%, transparent 52%);
+}
