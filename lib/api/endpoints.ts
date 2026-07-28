@@ -5,6 +5,10 @@ export const API = {
         WHOAMI: "/api/v1/auth/whoami",
         UPDATE: "/api/v1/auth/update",
     },
+    PASSWORD_RESET: {
+        REQUEST: "/api/v1/password-reset/request",
+        RESET: "/api/v1/password-reset/reset",
+    },
     REPORTS: {
         ROOT: "/api/v1/reports",
         SUMMARY: "/api/v1/reports/summary",
@@ -17,6 +21,8 @@ export const API = {
 export const PUBLIC_API_PATHS = new Set<string>([
     API.AUTH.REGISTER,
     API.AUTH.LOGIN,
+    API.PASSWORD_RESET.REQUEST,
+    API.PASSWORD_RESET.RESET,
 ]);
 
 export const PROTECTED_API_PATHS = new Set<string>([
