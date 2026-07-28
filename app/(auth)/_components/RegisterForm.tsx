@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { GENDER_OPTIONS, registerSchema, RegisterFormData } from "@/app/(auth)/_components/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState, useTransition } from "react";
@@ -22,7 +22,7 @@ export default function RegisterForm() {
         register,
         handleSubmit,
         setValue,
-        watch,
+        control,
         formState: { errors, isSubmitting },
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
@@ -35,7 +35,7 @@ export default function RegisterForm() {
         },
     });
 
-    const selectedGender = watch("gender");
+    const selectedGender = useWatch({ control, name: "gender" });
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -312,5 +312,4 @@ export default function RegisterForm() {
         </div>
     );
 }
-
 
