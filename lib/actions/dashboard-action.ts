@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 import { clearAuthCookies } from "@/lib/cookies";
 import { createUserReport } from "@/lib/api/protected";
 
-export async function handleCreateReport(formData: FormData) {
+import type { ReportRecord } from "@/lib/api/protected";
+
+export async function handleCreateReport(formData: FormData): Promise<{ success: boolean; message: string; report?: ReportRecord }> {
     try {
         const title = String(formData.get("title") ?? "").trim();
         const category = String(formData.get("category") ?? "").trim();
@@ -26,10 +28,10 @@ export async function handleCreateReport(formData: FormData) {
         payload.append("description", description);
         payload.append("image", image);
 
-        await createUserReport(payload);
+        const created = await createUserReport(payload);
         revalidatePath("/dashboard");
 
-        return { success: true, message: "Report submitted successfully" };
+        return { success: true, message: "Report submitted successfully", report: created };
     } catch (error: unknown) {
         const err = error as { message?: string };
         return {

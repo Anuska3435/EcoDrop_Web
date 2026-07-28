@@ -7,24 +7,28 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "localhost",
         port: "8089",
-        pathname: "/uploads/**"
+        pathname: "/uploads/**",
       },
       {
         protocol: "http",
         hostname: "127.0.0.1",
         port: "8089",
-        pathname: "/uploads/**"
+        pathname: "/uploads/**",
       },
       {
         protocol: "http",
         hostname: "10.0.2.2",
         port: "8089",
-        pathname: "/uploads/**"
-      }
-    ]
-  }
+        pathname: "/uploads/**",
+      },
+    ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
 };
 
 export default nextConfig;
-
 
