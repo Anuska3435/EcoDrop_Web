@@ -60,7 +60,7 @@ export default function LoginForm() {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     {error && (
                         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                             {error}
@@ -105,6 +105,7 @@ export default function LoginForm() {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                aria-label={showPassword ? "Hide password" : "Show password"}
                             >
                                 {showPassword ? (
                                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,5 +157,4 @@ export default function LoginForm() {
         </div>
     );
 }
-
 
