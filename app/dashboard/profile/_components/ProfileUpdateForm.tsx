@@ -32,17 +32,8 @@ export default function ProfileUpdateForm({ user }: ProfileUpdateFormProps) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const [previewUrl, setPreviewUrl] = useState<string | null>(
-        toLocalUploadsSrc(user.profileImageUrl ?? null)
-    );
-
-    useEffect(() => {
-        // When navigating away/back, ensure we don't keep an old remote URL in state.
-        setPreviewUrl((current) => {
-            if (current?.startsWith("blob:")) return current;
-            return toLocalUploadsSrc(user.profileImageUrl ?? null);
-        });
-    }, [user.profileImageUrl]);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const displayedPreviewUrl = previewUrl ?? toLocalUploadsSrc(user.profileImageUrl ?? null);
 
     useEffect(() => {
         return () => {
@@ -111,16 +102,16 @@ export default function ProfileUpdateForm({ user }: ProfileUpdateFormProps) {
 
                 <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
                     <div className="relative h-24 w-24 overflow-hidden rounded-full border border-sage-100 bg-sage-50">
-                        {previewUrl ? (
+                        {displayedPreviewUrl ? (
                             <Image
-                                src={previewUrl}
+                                src={displayedPreviewUrl}
                                 alt="Profile preview"
                                 fill
                                 sizes="96px"
-                                priority={!previewUrl.startsWith("blob:")}
-                                loading={previewUrl.startsWith("blob:") ? "lazy" : "eager"}
+                                priority={!displayedPreviewUrl.startsWith("blob:")}
+                                loading={displayedPreviewUrl.startsWith("blob:") ? "lazy" : "eager"}
                                 className="object-cover"
-                                unoptimized={previewUrl.startsWith("blob:")}
+                                unoptimized={displayedPreviewUrl.startsWith("blob:")}
                             />
                         ) : (
                             <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-sage-700">

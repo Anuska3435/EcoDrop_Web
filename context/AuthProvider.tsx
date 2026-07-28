@@ -47,21 +47,14 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     }, []);
 
     useEffect(() => {
-        if (initialUser) {
-            setIsLoading(false);
-            return;
-        }
+        if (initialUser) return;
 
-        let isMounted = true;
-
-        refreshUser().finally(() => {
-            if (isMounted) {
-                setIsLoading(false);
-            }
-        });
+        const timer = window.setTimeout(() => {
+            void refreshUser().finally(() => setIsLoading(false));
+        }, 0);
 
         return () => {
-            isMounted = false;
+            window.clearTimeout(timer);
         };
     }, [initialUser, refreshUser]);
 
