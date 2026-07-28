@@ -15,7 +15,13 @@ const userSchema = z.object({
     role: z.enum(["admin", "user"]),
 });
 
-type UserFormData = z.infer<typeof userSchema>;
+export type UserFormData = z.infer<typeof userSchema>;
+
+function normalizeGender(gender: string): UserFormData["gender"] {
+    return ["male", "female", "other", "prefer_not_to_say"].includes(gender)
+        ? gender as UserFormData["gender"]
+        : "prefer_not_to_say";
+}
 
 interface UserFormProps {
     user: DashboardUser | null;
@@ -35,8 +41,8 @@ export default function UserForm({ user, onClose, onSubmit }: UserFormProps) {
             lastName: user.lastName,
             email: user.email,
             username: user.username,
-            gender: user.gender as any,
-            role: user.role as any,
+            gender: normalizeGender(user.gender),
+            role: user.role === "admin" ? "admin" : "user",
             password: undefined,
         } : {
             firstName: "",

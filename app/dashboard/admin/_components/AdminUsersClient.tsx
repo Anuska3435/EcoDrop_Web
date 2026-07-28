@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { DashboardUser } from "@/lib/api/protected";
 import {
     adminGetUsersClient,
@@ -8,8 +8,11 @@ import {
     adminUpdateUserClient,
     adminDeleteUserClient
 } from "@/lib/api/client-protected";
-import UserForm from "./UserForm";
+import UserForm, { type UserFormData } from "./UserForm";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+
+const getErrorMessage = (error: unknown, fallback: string) =>
+    error instanceof Error ? error.message : fallback;
 
 export default function AdminUsersClient() {
     const [users, setUsers] = useState<DashboardUser[]>([]);
@@ -21,42 +24,49 @@ export default function AdminUsersClient() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
-    const loadUsers = async (page: number = 1, searchTerm: string = "") => {
+    const loadUsers = useCallback(async (page: number = 1, searchTerm: string = "") => {
         try {
             setLoading(true);
             const res = await adminGetUsersClient(page, 10, searchTerm);
             setUsers(res.data);
             setMeta(res.meta);
             setError(null);
-        } catch (err: any) {
-            setError(err.message || "Failed to load users");
+        } catch (err: unknown) {
+            setError(getErrorMessage(err, "Failed to load users"));
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        loadUsers(1, search);
-    }, [search]);
+        const timer = window.setTimeout(() => {
+            void loadUsers(1, search);
+        }, 0);
+        return () => window.clearTimeout(timer);
+    }, [search, loadUsers]);
 
-    const handleCreate = async (userData: any) => {
+    const handleCreate = async (userData: UserFormData) => {
+        if (!userData.password) {
+            alert("A password is required when creating a user");
+            return;
+        }
         try {
-            await adminCreateUserClient(userData);
+            await adminCreateUserClient({ ...userData, password: userData.password });
             setShowCreateModal(false);
             loadUsers(meta.page, search);
-        } catch (err: any) {
-            alert(err.message || "Failed to create user");
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, "Failed to create user"));
         }
     };
 
-    const handleUpdate = async (userData: any) => {
+    const handleUpdate = async (userData: UserFormData) => {
         if (!editingUser) return;
         try {
             await adminUpdateUserClient(editingUser._id, userData);
             setEditingUser(null);
             loadUsers(meta.page, search);
-        } catch (err: any) {
-            alert(err.message || "Failed to update user");
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, "Failed to update user"));
         }
     };
 
@@ -66,8 +76,8 @@ export default function AdminUsersClient() {
             await adminDeleteUserClient(deletingUserId);
             setDeletingUserId(null);
             loadUsers(meta.page, search);
-        } catch (err: any) {
-            alert(err.message || "Failed to delete user");
+        } catch (err: unknown) {
+            alert(getErrorMessage(err, "Failed to delete user"));
         }
     };
 
