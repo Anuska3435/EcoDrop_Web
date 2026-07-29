@@ -22,6 +22,11 @@ body {
     "Segoe UI", Roboto, sans-serif;
 }
 
+:focus-visible {
+  outline: 3px solid #5d7b5f;
+  outline-offset: 3px;
+}
+
 .quick-tool {
   align-items: center;
   background: #f8fafc;
