@@ -129,8 +129,12 @@ export default function ProfileUpdateForm({ user }: ProfileUpdateFormProps) {
                             type="file"
                             accept="image/png,image/jpeg,image/jpg,image/webp"
                             onChange={onImageChange}
+                            aria-describedby="profile-image-help"
                             className="block w-full rounded-2xl border border-dashed border-sage-200 bg-sage-50 px-4 py-3 text-sm text-gray-600"
                         />
+                        <p id="profile-image-help" className="mt-2 text-xs text-gray-500">
+                            Choose a JPG, PNG, or WebP image for your profile photo.
+                        </p>
                     </div>
                 </div>
 
