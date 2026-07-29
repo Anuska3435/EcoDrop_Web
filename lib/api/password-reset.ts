@@ -1,5 +1,4 @@
 import { API } from './endpoints';
-import { loginUser, registerUser } from './public';
 
 interface ApiResponse<T> {
   success: boolean;
