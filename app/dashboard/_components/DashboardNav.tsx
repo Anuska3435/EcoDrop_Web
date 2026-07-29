@@ -40,7 +40,7 @@ export default function DashboardNav() {
 
     return (
         <header className="border-b border-sage-100 bg-white/80 backdrop-blur-sm">
-            <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+            <nav aria-label="Dashboard navigation" className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
                 <EcoDropLogo href="/" size="sm" />
                 <div className="flex items-center gap-2 sm:gap-4">
                     {links.map((link) => {
@@ -52,6 +52,7 @@ export default function DashboardNav() {
                             <Link
                                 key={link.href}
                                 href={link.href}
+                                aria-current={isActive ? "page" : undefined}
                                 className={`rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                                     isActive
                                         ? "bg-sage-100 text-sage-800"
