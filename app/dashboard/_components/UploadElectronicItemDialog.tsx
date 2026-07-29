@@ -114,7 +114,7 @@ export default function UploadElectronicItemDialog({ file, onSave, onCancel }: U
 
     return (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 p-4 backdrop-blur-sm">
-            <div className="relative mx-auto my-12 max-w-2xl rounded-[22px] bg-white p-6 shadow-2xl sm:p-8">
+            <section role="dialog" aria-modal="true" aria-labelledby="upload-item-dialog-title" className="relative mx-auto my-12 max-w-2xl rounded-[22px] bg-white p-6 shadow-2xl sm:p-8">
                 <button
                     type="button"
                     onClick={onCancel}
@@ -125,7 +125,7 @@ export default function UploadElectronicItemDialog({ file, onSave, onCancel }: U
                 </button>
                 <div className="mb-6">
                     <p className="text-sm font-medium text-sage-600">Upload Electronic Item</p>
-                    <h2 className="mt-1 text-2xl font-semibold text-[#263129]">Review image and add details</h2>
+                    <h2 id="upload-item-dialog-title" className="mt-1 text-2xl font-semibold text-[#263129]">Review image and add details</h2>
                 </div>
 
                 {previewUrl ? (
@@ -218,7 +218,7 @@ export default function UploadElectronicItemDialog({ file, onSave, onCancel }: U
                         <p className="mt-2 text-sm leading-6">{recommendation}</p>
                     </div>
                 ) : null}
-            </div>
+            </section>
         </div>
     );
 }
