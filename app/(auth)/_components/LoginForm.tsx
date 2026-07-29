@@ -62,13 +62,13 @@ export default function LoginForm() {
 
                 <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     {error && (
-                        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                             {error}
                         </div>
                     )}
 
                     <div>
-                        <label className={labelClass}>Email Address</label>
+                        <label htmlFor="login-email" className={labelClass}>Email Address</label>
                         <div className="relative">
                             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,19 +76,22 @@ export default function LoginForm() {
                                 </svg>
                             </span>
                             <input
+                                id="login-email"
                                 type="email"
                                 {...register("email")}
                                 placeholder="Enter your email"
                                 className={inputClass}
+                                aria-invalid={Boolean(errors.email)}
+                                aria-describedby={errors.email ? "login-email-error" : undefined}
                             />
                         </div>
                         {errors.email && (
-                            <span className="mt-1 block text-sm text-red-500">{errors.email.message}</span>
+                            <span id="login-email-error" className="mt-1 block text-sm text-red-500">{errors.email.message}</span>
                         )}
                     </div>
 
                     <div>
-                        <label className={labelClass}>Password</label>
+                        <label htmlFor="login-password" className={labelClass}>Password</label>
                         <div className="relative">
                             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,10 +99,13 @@ export default function LoginForm() {
                                 </svg>
                             </span>
                             <input
+                                id="login-password"
                                 type={showPassword ? "text" : "password"}
                                 {...register("password")}
                                 placeholder="Enter your password"
                                 className={inputClass}
+                                aria-invalid={Boolean(errors.password)}
+                                aria-describedby={errors.password ? "login-password-error" : undefined}
                             />
                             <button
                                 type="button"
@@ -120,7 +126,7 @@ export default function LoginForm() {
                             </button>
                         </div>
                         {errors.password && (
-                            <span className="mt-1 block text-sm text-red-500">{errors.password.message}</span>
+                            <span id="login-password-error" className="mt-1 block text-sm text-red-500">{errors.password.message}</span>
                         )}
                     </div>
 
