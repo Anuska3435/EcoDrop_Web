@@ -61,3 +61,7 @@ npm run test:e2e
 ## Environment variables
 
 See `.env.example` for the variables used by the application. Never commit `.env.local` or real API keys.
+
+## Report uploads
+
+Dashboard report uploads accept JPG, PNG, and WebP images up to 10 MB. Use a clear photo of the electronic item and include a short description so the report can be categorized accurately.
