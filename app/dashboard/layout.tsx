@@ -1,4 +1,9 @@
 import DashboardNav from "@/app/dashboard/_components/DashboardNav";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Dashboard | EcoDrop",
+};
 
 export default function DashboardLayout({
     children,
