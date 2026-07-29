@@ -61,6 +61,7 @@ export default function PasswordUpdateForm() {
                         id="currentPassword"
                         name="currentPassword"
                         type={showPasswords ? "text" : "password"}
+                        autoComplete="current-password"
                         className={inputClass}
                         required
                     />
@@ -74,6 +75,7 @@ export default function PasswordUpdateForm() {
                         id="newPassword"
                         name="newPassword"
                         type={showPasswords ? "text" : "password"}
+                        autoComplete="new-password"
                         className={inputClass}
                         required
                     />
@@ -87,6 +89,7 @@ export default function PasswordUpdateForm() {
                         id="confirmPassword"
                         name="confirmPassword"
                         type={showPasswords ? "text" : "password"}
+                        autoComplete="new-password"
                         className={inputClass}
                         required
                     />
