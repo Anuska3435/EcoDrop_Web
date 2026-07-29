@@ -208,7 +208,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div>
-                    <label className={labelClass}>Password</label>
+                    <label htmlFor="register-password" className={labelClass}>Password</label>
                     <div className="relative">
                         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -216,10 +216,14 @@ export default function RegisterForm() {
                             </svg>
                         </span>
                         <input
+                            id="register-password"
                             type={showPassword ? "text" : "password"}
                             {...register("password")}
                             placeholder="••••••••"
                             className={`${inputClass} pr-11`}
+                            autoComplete="new-password"
+                            aria-invalid={Boolean(errors.password)}
+                            aria-describedby={errors.password ? "register-password-error" : undefined}
                         />
                         <button
                             type="button"
@@ -237,12 +241,12 @@ export default function RegisterForm() {
                         </button>
                     </div>
                     {errors.password && (
-                        <span className="mt-1 block text-sm text-red-500">{errors.password.message}</span>
+                        <span id="register-password-error" className="mt-1 block text-sm text-red-500">{errors.password.message}</span>
                     )}
                 </div>
 
                 <div>
-                    <label className={labelClass}>Confirm Password</label>
+                    <label htmlFor="register-confirm-password" className={labelClass}>Confirm Password</label>
                     <div className="relative">
                         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -250,10 +254,14 @@ export default function RegisterForm() {
                             </svg>
                         </span>
                         <input
+                            id="register-confirm-password"
                             type={showConfirmPassword ? "text" : "password"}
                             {...register("confirmPassword")}
                             placeholder="Confirm password"
                             className={`${inputClass} pr-11`}
+                            autoComplete="new-password"
+                            aria-invalid={Boolean(errors.confirmPassword)}
+                            aria-describedby={errors.confirmPassword ? "register-confirm-password-error" : undefined}
                         />
                         <button
                             type="button"
@@ -271,7 +279,7 @@ export default function RegisterForm() {
                         </button>
                     </div>
                     {errors.confirmPassword && (
-                        <span className="mt-1 block text-sm text-red-500">{errors.confirmPassword.message}</span>
+                        <span id="register-confirm-password-error" className="mt-1 block text-sm text-red-500">{errors.confirmPassword.message}</span>
                     )}
                 </div>
 
