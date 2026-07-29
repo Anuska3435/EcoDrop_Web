@@ -86,13 +86,13 @@ export default function RegisterForm() {
 
                 <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     {error && (
-                        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                             {error}
                         </div>
                     )}
 
                 <div>
-                    <label className={labelClass}>Full Name</label>
+                    <label htmlFor="register-full-name" className={labelClass}>Full Name</label>
                     <div className="relative">
                         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,19 +100,22 @@ export default function RegisterForm() {
                             </svg>
                         </span>
                         <input
+                            id="register-full-name"
                             type="text"
                             {...register("fullName")}
                             placeholder="Enter your name"
                             className={inputClass}
+                            aria-invalid={Boolean(errors.fullName)}
+                            aria-describedby={errors.fullName ? "register-full-name-error" : undefined}
                         />
                     </div>
                     {errors.fullName && (
-                        <span className="mt-1 block text-sm text-red-500">{errors.fullName.message}</span>
+                        <span id="register-full-name-error" className="mt-1 block text-sm text-red-500">{errors.fullName.message}</span>
                     )}
                 </div>
 
                 <div>
-                    <label className={labelClass}>Email Address</label>
+                    <label htmlFor="register-email" className={labelClass}>Email Address</label>
                     <div className="relative">
                         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,14 +123,18 @@ export default function RegisterForm() {
                             </svg>
                         </span>
                         <input
+                            id="register-email"
                             type="email"
                             {...register("email")}
                             placeholder="example@email.com"
                             className={inputClass}
+                            autoComplete="email"
+                            aria-invalid={Boolean(errors.email)}
+                            aria-describedby={errors.email ? "register-email-error" : undefined}
                         />
                     </div>
                     {errors.email && (
-                        <span className="mt-1 block text-sm text-red-500">{errors.email.message}</span>
+                        <span id="register-email-error" className="mt-1 block text-sm text-red-500">{errors.email.message}</span>
                     )}
                 </div>
 
